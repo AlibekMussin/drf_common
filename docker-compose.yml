@@ -1,0 +1,17 @@
+version: '3.2'
+
+services:
+  social-shop-mvp:
+    build: ./
+    volumes:
+      - .:/usr/src/app/
+      - ../social_app_logs:/usr/src/app/logs
+      - ./uploads:/usr/src/app/uploads
+    env_file:
+      - project/.env
+    container_name: social-shop-mvp
+    restart: unless-stopped
+    environment:
+      - C_FORCE_ROOT=true
+      - TZ=Asia/Atyrau
+    network_mode: host
