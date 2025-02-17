@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 from pathlib import Path
@@ -20,8 +21,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'apps.user',
     'apps.file',
-
+    # ADD YOUR APPS
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'user.User'
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -106,21 +110,24 @@ CORS_ALLOW_METHODS = [
     'DELETE'
 ]
 
-
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'apps.user.authentication.JWTAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apps.user.authentication.JWTAuthentication',
+    ),
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.ScopedRateThrottle',
     ],
-    # 'DEFAULT_FILTER_BACKENDS': [
-    #     'django_filters.rest_framework.DjangoFilterBackend'
-    # ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
 }
+
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_ACCESS_TOKEN_LIFETIME', 3000)))
+JWT_REFRESH_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_REFRESH_TOKEN_LIFETIME', 36000)))
+JWT_RESET_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_RESET_TOKEN_LIFETIME', 36000)))
