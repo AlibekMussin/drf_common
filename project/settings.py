@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'apps.user',
     'apps.file',
-    # ADD YOUR APPS
+    'apps.utils',
+
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,7 @@ JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_ACCESS_TOKEN_LIFETIME', 3000)))
 JWT_REFRESH_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_REFRESH_TOKEN_LIFETIME', 36000)))
 JWT_RESET_TOKEN_LIFETIME = timedelta(seconds=int(os.getenv('JWT_RESET_TOKEN_LIFETIME', 36000)))
+
+# errors handling
+LOG_TO_TELEGRAM_BOT_TOKEN = os.getenv('LOG_TO_TELEGRAM_BOT_TOKEN', '')
+LOG_TO_TELEGRAM_CHAT_ID = os.getenv('LOG_TO_TELEGRAM_CHAT_ID', '')

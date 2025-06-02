@@ -45,6 +45,12 @@ class User(AbstractUser):
         related_name='permission_users',  # Уникальное имя для обратной ссылки
         blank=True
     )
+    region = models.ForeignKey(
+        'utils.Region',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        verbose_name="Регион пользователя"
+    )
 
     def save(self, *args, **kwargs):
         if not self.activate_token:

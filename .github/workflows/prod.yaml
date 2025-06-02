@@ -1,0 +1,63 @@
+name: Release changes to production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 📥 Setup Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_AUTH_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_PROJECT_RW_TOKEN }}
+
+      - name: 📦 Build and push to register
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: company_name/project:latest
+
+  deploy:
+    runs-on: self-hosted-backend
+    needs: build
+
+    steps:
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_AUTH_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_PROJECT_R_TOKEN }}
+
+      - name: 🗽 Pull latest version
+        run: docker pull company_name/project:latest
+
+      - name: 💿 Re-run App
+        run: |
+          cd /home/admin_username/actions-runner-back/_work/project
+          docker compose up -d --remove-orphans --no-deps
+
+      - name: 📀 Migrations
+        run: |
+          docker exec -i project python3 manage.py migrate
+
+      - name: 🐈 Groups
+        run: |
+          docker exec -i  project python3 manage.py groups
+
+      - name: 🐈 Regions
+        run: |
+          docker exec -i  spk-back python3 manage.py fill_regions
+
+      - name: 🔥 Done
+        run: |
+          echo "Finish deploy"
