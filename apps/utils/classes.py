@@ -75,9 +75,9 @@ class CreateModelMixin(mixins.CreateModelMixin):
 
 class UpdateModelMixin(mixins.UpdateModelMixin):
     def update(self, request, *args, **kwargs):
-        request.data._mutable = True
+        # request.data._mutable = True
         request.data['updated_by_user'] = request.user.id
-        request.data._mutable = False
+        # request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
 
